@@ -19,8 +19,7 @@ from wsgiref import simple_server
 from oslo.config import cfg
 import paste.deploy
 
-import falcon
-import simport
+import pecan
 
 from monasca_events_api.openstack.common import log
 
@@ -46,21 +45,8 @@ def launch(conf, config_file="/etc/monasca/events_api.conf"):
     cfg.set_defaults(log.log_opts, default_log_levels=log_levels)
     log.setup('monasca_events_api')
 
-    app = falcon.API()
+    app = pecan.make_app("monasca_events_api.api.root.RootController")
 
-    events = simport.load(cfg.CONF.dispatcher.events)()
-    app.add_route("/v2.0/events", events)
-    app.add_route("/v2.0/events/{event_id}", events)
-
-    streams = simport.load(cfg.CONF.dispatcher.stream_definitions)()
-    app.add_route("/v2.0/stream-definitions/", streams)
-    app.add_route("/v2.0/stream-definitions/{stream_id}", streams)
-
-    transforms = simport.load(cfg.CONF.dispatcher.transforms)()
-    app.add_route("/v2.0/transforms", transforms)
-    app.add_route("/v2.0/transforms/{transform_id}", transforms)
-
-    LOG.debug('Dispatcher drivers have been added to the routes!')
     return app
 
 

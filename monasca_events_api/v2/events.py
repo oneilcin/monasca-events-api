@@ -20,6 +20,9 @@ import collections
 
 import simport
 
+import pecan
+from pecan import rest
+
 from monasca_events_api.api import events_api_v2
 from monasca_events_api.common.messaging import exceptions as message_queue_exceptions
 from monasca_events_api.common.messaging.message_formats import events_transform_factory
@@ -38,7 +41,7 @@ from oslo.config import cfg
 LOG = log.getLogger(__name__)
 
 
-class Events(events_api_v2.EventsV2API):
+class Events(rest.RestController, events_api_v2.EventsV2API):
 
     def __init__(self):
         self._region = cfg.CONF.region
@@ -57,6 +60,16 @@ class Events(events_api_v2.EventsV2API):
             simport.load(cfg.CONF.messaging.driver)("raw-events"))
         self._events_repo = (
             simport.load(cfg.CONF.repositories.events)())
+
+    @pecan.expose(content_type='application/json')
+    def get_one(self):
+        pecan.respose.status = 200
+        return "One"
+
+    @pecan.expose(content_type='application/json')
+    def get_all(self):
+        pecan.response.status = 200
+        return "All"
 
     def on_get(self, req, res, event_id=None):
         if event_id:

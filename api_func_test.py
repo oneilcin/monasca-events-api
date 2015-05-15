@@ -45,7 +45,7 @@ def test_events_get():
 
     body = {}
 
-    response = requests.get(url=events_url + "/v2.0/events",
+    response = requests.get(url=events_url + "/v2/events",
                             data=json.dumps(body),
                             headers=headers)
 
@@ -168,7 +168,8 @@ def test_stream_definition_delete():
     assert response.status_code == 204
     print("DELETE /stream-definitions success")
 
-test_stream_definition_post()
-test_stream_definition_get()
-test_stream_definition_delete()
+# test_stream_definition_post()
+# test_stream_definition_get()
+# test_stream_definition_delete()
 test_events_get_all()
+# test_events_get()
