@@ -44,6 +44,7 @@ LOG = log.getLogger(__name__)
 class Events(rest.RestController, events_api_v2.EventsV2API):
 
     def __init__(self):
+        print "__init events"
         self._region = cfg.CONF.region
         self._default_authorized_roles = (
             cfg.CONF.security.default_authorized_roles)
@@ -68,6 +69,7 @@ class Events(rest.RestController, events_api_v2.EventsV2API):
 
     @pecan.expose(content_type='application/json')
     def get_all(self):
+        print "event obj: {}".format(self)
         pecan.response.status = 200
         return "All"
 
