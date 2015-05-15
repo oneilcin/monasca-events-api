@@ -63,15 +63,24 @@ class Events(rest.RestController, events_api_v2.EventsV2API):
             simport.load(cfg.CONF.repositories.events)())
 
     @pecan.expose(content_type='application/json')
-    def get_one(self):
+    def get_one(self, event_id):
+        helpers.validate_authorization(pecan.request, self._default_authorized_roles)
+        tenant_id = helpers.get_tenant_id(pecan.request)
+        result = self._list_event(tenant_id, event_id, pecan.request.url)
         pecan.respose.status = 200
-        return "One"
+        return helpers.dumpit_utf8(result)
 
     @pecan.expose(content_type='application/json')
     def get_all(self):
-        print "event obj: {}".format(self)
+        helpers.validate_authorization(pecan.request, self._default_authorized_roles)
+        tenant_id = helpers.get_tenant_id(pecan.request)
+        offset = helpers.normalize_offset(helpers.get_query_param(pecan.request,
+                                                                  'offset'))
+        limit = helpers.get_query_param(pecan.request, 'limit')
+
+        result = self._list_events(tenant_id, pecan.request.url, offset, limit)
         pecan.response.status = 200
-        return "All"
+        return helpers.dumpit_utf8(result)
 
     def on_get(self, req, res, event_id=None):
         if event_id:
