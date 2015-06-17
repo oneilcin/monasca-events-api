@@ -86,8 +86,8 @@ class Transforms(transforms_api_v2.TransformsV2API):
     def _send_event(self, event):
         """Send the event using the message queue.
 
-        :param metrics: An event object.
-        :raises: falcon.HTTPServiceUnavailable
+        :param event: An event object.
+        :raises: falcon.HTTPInternalServerError
         """
         try:
             str_msg = json.dumps(event, cls=MyEncoder,
@@ -114,7 +114,7 @@ class Transforms(transforms_api_v2.TransformsV2API):
         """Store the transform using the repository.
 
         :param transform: A transform object.
-        :raises: falcon.HTTPServiceUnavailable
+        :raises: falcon.HTTPInternalServerError
         """
         try:
             name = transform['name']
